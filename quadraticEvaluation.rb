@@ -1,10 +1,10 @@
-print 'Enter a: '
+print 'Введите a: '
 a = gets.chomp.to_i
 
-print 'Enter b: '
+print 'Введите b: '
 b = gets.chomp.to_i
 
-print 'Enter c: '
+print 'Введите c: '
 c = gets.chomp.to_i
 
 D = b**2 - 4 * a * c
