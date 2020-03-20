@@ -11,7 +11,7 @@ class Route
   end
 
   def remove_station(station)
-    @stations.delete(stations){"not found"}
+    @stations.delete(station){"not found"}
   end
 
   def show_route_stations
