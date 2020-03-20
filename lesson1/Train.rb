@@ -1,7 +1,5 @@
 class Train
-  attr_accessor :speed
-
-  attr_reader :amount, :number, :type
+  attr_reader :amount, :number, :type, :speed
 
   def initialize(number, type, amount)
     @number = number
@@ -12,61 +10,59 @@ class Train
     @currentStation = nil
   end
 
-  def stop
-    self.speed = 0
+  def increase_speed(value)
+    @speed += value
   end
 
-  def changeAmount(action)
+  def decrease_speed(value)
+    @speed != 0 ? @speed -= value : 0 
+  end
+
+  def add_train_car
+    @speed == 0 ? @amount += 1 : (puts 'train is moving!')
+  end
+
+  def remove_train_car
     if @speed == 0
-      if action == '+'
-        @amount += 1
-      elsif action == '-' && @amount != 0
-        @amount -= 1
-      elsif action == '-' && @amount == 0
-        puts 'Error: amount of train cars is 0'
-      end
+      @amount != 0 ? @amount -= 1 : 0
     else
       puts 'train is moving!'
     end
   end
 
   def route=(route)
-    @route = route.middleStations.unshift(route.startStation).push(route.endStation)
-    @route[0].addTrain(self)
+    @route = route
+    @route.stations.first.add_train(self)
     @currentStation = 0
   end
 
-  def changeStation(action)
-    if action == '+'
-      if @currentStation < @route.length - 1
-        @route[@currentStation].removeTrain(self)
-        @currentStation += 1
-        @route[@currentStation].addTrain(self)
-      else
-        puts 'its done'
-      end
-    elsif action == '-'
-      if @currentStation > 0
-        @route[@currentStation].removeTrain(self)
-        @currentStation -= 1
-        @route[@currentStation].addTrain(self)
-      else
-        puts 'its start position'
-      end
+  def move_forward
+    if @currentStation < @route.stations.length - 1
+      @route.stations[@currentStation].remove_train(self)
+      @currentStation += 1
+      @route.stations[@currentStation].add_train(self)
+    else
+      puts 'its end position'
     end
   end
 
-  def showNearbyStations
-    if @currentStation > 0 && @currentStation < @route.length - 1
-      puts "prev: #{@route[@currentStation - 1].name}"
-      puts "current: #{@route[@currentStation].name}"
-      puts "next: #{@route[@currentStation + 1].name}" 
+  def move_backward
+    if @currentStation > 0
+      @route.stations[@currentStation].remove_train(self)
+      @currentStation -= 1
+      @route.stations[@currentStation].add_train(self)
+    else
+      puts 'its start position'
+    end
+  end
+
+  def show_nearby_stations
+    if @currentStation > 0 && @currentStation < @route.stations.length - 1
+      [@route.stations[@currentStation - 1], @route.stations[@currentStation], @route.stations[@currentStation + 1]]
     elsif @currentStation == 0
-      puts "current: #{@route[@currentStation].name}" 
-      puts "next: #{@route[@currentStation + 1].name}"
-    elsif @currentStation == @route.length - 1
-      puts "prev: #{@route[@currentStation - 1].name}" 
-      puts "current: #{@route[@currentStation].name}"
+      [@route.stations[@currentStation], @route.stations[@currentStation + 1]]
+    elsif @currentStation == @route.stations.length - 1
+      [@route.stations[@currentStation - 1], @route.stations[@currentStation]]
     end
   end
 end

@@ -1,23 +1,21 @@
 class Route
-  attr_reader :startStation, :middleStations, :endStation
+  attr_reader :stations
 
   def initialize(startStation, endStation)
-    @startStation = startStation
-    @endStation = endStation
-    @middleStations = []
+    @stations = [startStation, endStation]
   end
 
-  def addStation(station)
-    @middleStations << station
+  def add_station(station)
+    @stations << @stations[@stations.length - 1]
+    @stations[-2] = station
   end
 
-  def removeStation(station_)
-    @middleStations = @middleStations.select{|station| station != station_}
+  def remove_station(station)
+    @stations.delete(stations){"not found"}
   end
 
-  def showRouteStations
-    stationsToShow = @middleStations.unshift(@startStation).push(@endStation)
+  def show_route_stations
     puts "Route:"
-    stationsToShow.each{|station| print "#{station.name} "}
+    @stations.each{|station| print "#{station.name} "}
   end
 end
