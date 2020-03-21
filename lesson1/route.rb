@@ -10,7 +10,9 @@ class Route
   end
 
   def remove_station(station)
-    @stations.delete(station){"not found"}
+    if station != @stations.first && station != @stations.last
+      @stations.delete(station){"not found"}
+    end
   end
 
   def show_route_stations
