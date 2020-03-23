@@ -1,10 +1,9 @@
 class Train
-  attr_reader :amount, :number, :type, :speed
+  attr_reader :wagons, :number, :type, :speed
 
-  def initialize(number, type, amount)
+  def initialize(number, wagons = [])
     @number = number
-    @type = type
-    @amount = amount
+    @wagons = wagons
     @speed = 0
     @route = nil
     @current_station = nil
@@ -18,19 +17,19 @@ class Train
     @speed - value < 0 ? @speed = 0 : @speed -= value 
   end
 
-  def add_train_car
-    @amount += 1
+  def add_wagon(wagon)
+    @wagons << wagon
+    wagon.attach(self)
   end
 
-  def remove_train_car
-    if @speed == 0 && @amount > 0
-      @amount -= 1
-    end
+  def remove_wagon(wagon)
+    @wagons.delete(wagon)
+    wagon.detach
   end
 
   def route=(route)
     @route = route
-    @route.stations.first.add_train(self)
+    first_station.add_train(self)
     @current_station = 0
   end
   
@@ -39,13 +38,13 @@ class Train
   end
 
   def prev_station
-    if current_station != @route.stations.first
+    if first_station?
       @route.stations[@current_station - 1]
     end
   end
   
   def next_station
-    if current_station != @route.stations.last
+    if last_station?
       @route.stations[@current_station + 1]
     end
   end
@@ -64,5 +63,23 @@ class Train
       @current_station -= 1
       current_station.add_train(self)
     end
+  end
+
+  protected
+  # Вспомогательные методы, используются только в самом классе
+  def first_station
+    @route.stations.first
+  end
+
+  def last_station
+    @route.stations.last
+  end
+
+  def first_station?
+    current_station == first_station
+  end
+
+  def last_station?
+    current_station == last_station
   end
 end
