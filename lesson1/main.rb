@@ -27,6 +27,7 @@ class RailRoad
         edit_object_menu
       when 3
         show_data
+        menu
       else
         puts 'Такой команды не существует!'
         menu
@@ -218,7 +219,7 @@ class RailRoad
   end
 
   def show_data
-    @stations.each_with_index { |station, index| puts "#{index + 1}: #{station.name}, #{station.trains}"}
+    @stations.each_with_index { |station, index| puts "#{index + 1}: #{station.name},\n #{station.trains}"}
   end
 
   def show_stations
