@@ -6,6 +6,8 @@ require_relative './passenger_wagon'
 require_relative './cargo_wagon'
 
 class RailRoad
+  attr_reader :trains
+
   def initialize
     @stations = []  
     @trains = []
@@ -15,8 +17,9 @@ class RailRoad
 
   def menu
     puts 'Введите 1 для создания станции, маршрута, поезда или вагона'
-    puts 'Введите 2 для изменения созданный объектов'
+    puts 'Введите 2 для изменения созданных объектов'
     puts 'Введите 3 для просмотра данных о созданных объектах'
+    puts 'Введите 0 для остановки программы'
     
     enter = gets.chomp.to_i
 
@@ -28,6 +31,8 @@ class RailRoad
       when 3
         show_data
         menu
+      when 0
+        return 0
       else
         puts 'Такой команды не существует!'
         menu
@@ -163,7 +168,14 @@ class RailRoad
     puts 'Введите номер станции'
     station_index = gets.chomp.to_i - 1
 
-    @routes[route_index].remove_station(@stations[station_index])
+    route = @routes[route_index]
+    last_station = route.last
+
+    if station_index == 0 || station_index == route.index(last_station)
+      puts 'Нельзя удалить стартовую или конечную точку маршрута!'
+    else
+      @routes[route_index].remove_station(@stations[station_index])
+    end
   end
 
   def set_route
@@ -207,7 +219,8 @@ class RailRoad
     puts 'Введите номер поезда'
     train_index = gets.chomp.to_i - 1
     
-    @trains[train_index].move_forward
+    train = @trains[train_index]
+    train.move_forward
   end
 
   def move_train_backward
@@ -215,7 +228,8 @@ class RailRoad
     puts 'Введите номер поезда'
     train_index = gets.chomp.to_i - 1
     
-    @trains[train_index].move_forward
+    train = @trains[train_index]
+    train.move_backward
   end
 
   def show_data
@@ -227,7 +241,7 @@ class RailRoad
   end
 
   def show_routes
-    @routes.each_with_index { |route, index| puts "#{index + 1}: #{route}" }
+    @routes.each_with_index { |route, index| puts "#{index + 1}: #{route}, #{route.stations}" }
   end
 
   def show_trains
@@ -241,3 +255,7 @@ end
 
 rails = RailRoad.new
 rails.menu
+puts rails.trains
+puts rails.trains[0].prev_station
+puts rails.trains[0].current_station
+puts rails.trains[0].next_station

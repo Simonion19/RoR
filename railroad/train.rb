@@ -51,6 +51,7 @@ class Train
 
   def move_forward
     if next_station
+      puts '123'
       current_station.remove_train(self)
       @current_station += 1
       current_station.add_train(self)
@@ -59,6 +60,7 @@ class Train
 
   def move_backward
     if prev_station
+      puts '123'
       current_station.remove_train(self)
       @current_station -= 1
       current_station.add_train(self)

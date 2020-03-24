@@ -7,12 +7,12 @@ class PassengerTrain < Train
   end
 
   def add_wagon(wagon)
-    super(wagon) if wagon_passenger?(wagon)
+    wagon_passenger?(wagon) ? super(wagon) : (puts 'Вагон неподходящего типа!')
   end
 
   private
 
   def wagon_passenger?(wagon)
-    wagon.type == 'passenger'
+    wagon.type == @type
   end
 end
