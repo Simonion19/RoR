@@ -169,9 +169,9 @@ class RailRoad
     station_index = gets.chomp.to_i - 1
 
     route = @routes[route_index]
-    last_station = route.last
+    last_station = route.stations.last
 
-    if station_index == 0 || station_index == route.index(last_station)
+    if station_index == 0 || station_index == route.stations.index(last_station)
       puts 'Нельзя удалить стартовую или конечную точку маршрута!'
     else
       @routes[route_index].remove_station(@stations[station_index])
@@ -206,30 +206,40 @@ class RailRoad
     show_trains
     puts 'Введите номер поезда'
     train_index = gets.chomp.to_i - 1
+    train = @trains[train_index]
 
     show_wagons
     puts 'Введите номер вагона'
     wagon_index = gets.chomp.to_i - 1
+    wagon = @wagons[wagon_index]
 
-    @trains[train_index].remove_wagon(@wagons[wagon_index])
+    train.remove_wagon(wagon)
   end 
 
   def move_train_forward
     show_trains
     puts 'Введите номер поезда'
     train_index = gets.chomp.to_i - 1
-    
     train = @trains[train_index]
-    train.move_forward
+
+    if train.route
+      train.move_forward
+    else
+      puts 'Поезду не задан маршрут'
+    end
   end
 
   def move_train_backward
     show_trains
     puts 'Введите номер поезда'
     train_index = gets.chomp.to_i - 1
-    
     train = @trains[train_index]
-    train.move_backward
+
+    if train.route
+      train.move_backward
+    else
+      puts 'Поезду не задан маршрут'
+    end
   end
 
   def show_data
@@ -255,7 +265,3 @@ end
 
 rails = RailRoad.new
 rails.menu
-puts rails.trains
-puts rails.trains[0].prev_station
-puts rails.trains[0].current_station
-puts rails.trains[0].next_station
