@@ -2,12 +2,12 @@ require_relative './train'
 
 class CargoTrain < Train
   def initialize(number, wagons = [])
-    super(number, wagons)
+    super
     @type = 'cargo'
   end
 
   def add_wagon(wagon)
-    wagon_cargo?(wagon) ? super(wagon) : (puts 'Вагон неподходящего типа!')
+    super(wagon) if wagon_cargo?(wagon)
   end
 
   private

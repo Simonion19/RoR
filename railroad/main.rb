@@ -247,19 +247,39 @@ class RailRoad
   end
 
   def show_stations
-    @stations.each_with_index { |station, index| puts "#{index + 1}: #{station.name}" }
+    if @stations.length != 0
+      @stations.each_with_index { |station, index| puts "#{index + 1}: #{station.name}" }
+    else
+      puts 'Нет ни одного поезда'
+      menu
+    end
   end
 
   def show_routes
-    @routes.each_with_index { |route, index| puts "#{index + 1}: #{route}, #{route.stations}" }
+    if @routes.length != 0
+      @routes.each_with_index { |route, index| puts "#{index + 1}: #{route}, #{route.stations}" }
+    else
+      puts 'Нет ни одного маршрута'
+      menu
+    end
   end
 
   def show_trains
-    @trains.each_with_index { |train, index| puts "#{index + 1}: #{train}" }
+    if @trains.length != 0
+      @trains.each_with_index { |train, index| puts "#{index + 1}: #{train}" }
+    else
+      puts 'Нет ни одного поезда'
+      menu
+    end
   end
 
   def show_wagons
-    @wagons.each_with_index { |wagon, index| puts "#{index + 1}: #{wagon}" }
+    if @wagons.length != 0
+      @wagons.each_with_index { |wagon, index| puts "#{index + 1}: #{wagon}" }
+    else
+      puts 'Нет ни одного вагона'
+      menu
+    end
   end
 end
 
