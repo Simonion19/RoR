@@ -1,4 +1,8 @@
+require_relative './module_company.rb'
+
 class Wagon
+  include Company
+  
   def initialize
     @train = nil
   end

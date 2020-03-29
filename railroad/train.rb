@@ -1,5 +1,17 @@
+require_relative './module_company.rb'
+require_relative './module_instance_counter.rb'
+
 class Train
+  include Company
+  include InstanceCounter
+
   attr_reader :wagons, :number, :type, :speed, :route
+
+  @@trains = {}
+
+  def self.find(number)
+    @@trains[number]
+  end
 
   def initialize(number, wagons = [])
     @number = number
@@ -7,6 +19,8 @@ class Train
     @speed = 0
     @route = nil
     @current_station = nil
+    @@trains[number] = self
+    register_instance
   end
 
   def increase_speed(value)
