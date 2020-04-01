@@ -7,6 +7,8 @@ class Train
 
   attr_reader :wagons, :number, :type, :speed, :route
 
+  NUMBER_FORMAT = /[А-яA-z0-9]{3}-?[А-яA-z0-9]{2}/
+
   @@trains = {}
 
   def self.find(number)
@@ -14,7 +16,8 @@ class Train
   end
 
   def initialize(number, wagons = [])
-    @number = number
+    @number = number.to_s
+    validate!
     @wagons = wagons
     @speed = 0
     @route = nil
@@ -69,7 +72,7 @@ class Train
       @current_station += 1
       current_station.add_train(self)
     else
-      puts 'Это конечная станция'
+      raise 'Это конечная станция'
     end
   end
 
@@ -79,12 +82,26 @@ class Train
       @current_station -= 1
       current_station.add_train(self)
     else
-      puts 'Это первая станция маршрута'
+      raise 'Это первая станция маршрута'
     end
   end
 
+  def valid?
+    validate!
+    true
+  rescue StandardError => e
+    puts e.message
+  end
+
   protected
-  # Вспомогательные методы, используются только в самом классе
+
+  def validate!
+    raise "Number can't be nil" if @number.nil?
+    raise "Number should be at least 5 symbols" if @number.length < 5
+    raise "Number length can't be more than 6 symbols" if @number.length > 6
+    raise "Number has invalid format" if @number !~ NUMBER_FORMAT
+  end
+
   def first_station
     @route.stations.first
   end

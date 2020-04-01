@@ -19,7 +19,6 @@ class RailRoad
     puts 'Введите 1 для создания станции, маршрута, поезда или вагона'
     puts 'Введите 2 для изменения созданных объектов'
     puts 'Введите 3 для просмотра данных о созданных объектах'
-    puts 'Введите 0 для остановки программы'
     
     enter = gets.chomp.to_i
 
@@ -31,8 +30,6 @@ class RailRoad
       when 3
         show_data
         menu
-      when 0
-        return 0
       else
         puts 'Такой команды не существует!'
         menu
@@ -54,7 +51,8 @@ class RailRoad
         @stations << create_station
         add_object_menu
       when 2
-        @trains << create_train
+        new_train = create_train
+        @trains << new_train
         add_object_menu
       when 3
         @wagons << create_wagon
@@ -65,7 +63,7 @@ class RailRoad
       when 0
         menu
       else
-        puts 'Введите 1 для создания станции'
+        puts 'Такой команды не существует!'
         add_object_menu
     end  
   end
@@ -74,6 +72,9 @@ class RailRoad
     puts 'Введите название станции'
     enter = gets.chomp.to_s
     Station.new(enter)
+  rescue StandardError => e
+    puts e.message
+    create_station
   end
 
   def create_train
@@ -84,7 +85,15 @@ class RailRoad
     puts 'Введите 2 для выбора пассажирского поезда'
     enter = gets.chomp.to_i
 
-    enter == 1 ? (return CargoTrain.new(number)) : (return PassengerTrain.new(number))
+    begin
+      enter == 1 ? (new_train = CargoTrain.new(number)) : (new_train = PassengerTrain.new(number))
+    rescue StandardError => e
+      puts e.message
+      create_train
+    end
+
+    puts new_train
+    return new_train
   end
 
   def create_wagon
@@ -96,7 +105,7 @@ class RailRoad
   end
 
   def create_route
-    show_stations
+    menu if !show_stations
     puts 'Введите номер станции отправления'
     start_index = gets.chomp.to_i - 1
     puts 'Введите номер станции прибытия'
@@ -148,11 +157,11 @@ class RailRoad
   end
 
   def add_station_to_route
-    show_routes
+    menu if !show_routes
     puts 'Введите номер маршрута'
     route_index = gets.chomp.to_i - 1
     
-    show_stations
+    menu if !show_stations
     puts 'Введите номер станции'
     station_index = gets.chomp.to_i - 1
 
@@ -160,11 +169,11 @@ class RailRoad
   end
 
   def remove_station_from_route
-    show_routes
+    menu if !show_routes
     puts 'Введите номер маршрута'
     route_index = gets.chomp.to_i - 1
     
-    show_stations
+    menu if !show_stations
     puts 'Введите номер станции'
     station_index = gets.chomp.to_i - 1
 
@@ -179,11 +188,11 @@ class RailRoad
   end
 
   def set_route
-    show_trains
+    menu if !show_trains
     puts 'Введите номер поезда'
     train_index = gets.chomp.to_i - 1
     
-    show_routes
+    menu if !show_routes
     puts 'Введите номер маршрута'
     route_index = gets.chomp.to_i - 1
     
@@ -191,11 +200,11 @@ class RailRoad
   end
 
   def add_wagon_to_train
-    show_trains
+    menu if !show_trains
     puts 'Введите номер поезда'
     train_index = gets.chomp.to_i - 1
 
-    show_wagons
+    menu if !show_wagons
     puts 'Введите номер вагона'
     wagon_index = gets.chomp.to_i - 1
 
@@ -203,12 +212,12 @@ class RailRoad
   end
 
   def remove_wagon_from_train
-    show_trains
+    menu if !show_trains
     puts 'Введите номер поезда'
     train_index = gets.chomp.to_i - 1
     train = @trains[train_index]
 
-    show_wagons
+    menu if !show_wagons
     puts 'Введите номер вагона'
     wagon_index = gets.chomp.to_i - 1
     wagon = @wagons[wagon_index]
@@ -217,28 +226,36 @@ class RailRoad
   end 
 
   def move_train_forward
-    show_trains
+    menu if !show_trains
     puts 'Введите номер поезда'
     train_index = gets.chomp.to_i - 1
     train = @trains[train_index]
 
-    if train.route
-      train.move_forward
-    else
-      puts 'Поезду не задан маршрут'
+    begin
+      if train.route
+        train.move_forward
+      else
+        raise 'Поезду не задан маршрут'
+      end
+    rescue StandardError => e
+      puts e.message
     end
   end
 
   def move_train_backward
-    show_trains
+    menu if !show_trains
     puts 'Введите номер поезда'
     train_index = gets.chomp.to_i - 1
     train = @trains[train_index]
 
-    if train.route
-      train.move_backward
-    else
-      puts 'Поезду не задан маршрут'
+    begin
+      if train.route
+        train.move_backward
+      else
+        raise 'Поезду не задан маршрут'
+      end
+    rescue StandardError => e
+      puts e.message
     end
   end
 
@@ -247,39 +264,39 @@ class RailRoad
   end
 
   def show_stations
-    if @stations.length != 0
-      @stations.each_with_index { |station, index| puts "#{index + 1}: #{station.name}" }
-    else
-      puts 'Нет ни одного поезда'
-      menu
-    end
+    raise 'Нет ни одного поезда' if @stations.length == 0
+    @stations.each_with_index { |station, index| puts "#{index + 1}: #{station.name}" }
+    true
+  rescue StandardError => e
+    puts e.message
+    false
   end
 
   def show_routes
-    if @routes.length != 0
-      @routes.each_with_index { |route, index| puts "#{index + 1}: #{route}, #{route.stations}" }
-    else
-      puts 'Нет ни одного маршрута'
-      menu
-    end
+    raise 'Нет ни одного маршрута' if @routes.length == 0
+    @routes.each_with_index { |route, index| puts "#{index + 1}: #{route}, #{route.stations}" }
+    true
+  rescue StandardError => e
+    puts e.message
+    false
   end
 
   def show_trains
-    if @trains.length != 0
-      @trains.each_with_index { |train, index| puts "#{index + 1}: #{train}" }
-    else
-      puts 'Нет ни одного поезда'
-      menu
-    end
+    raise 'Нет ни одного поезда' if @trains.length == 0
+    @trains.each_with_index { |train, index| puts "#{index + 1}: #{train}" }
+    true
+  rescue StandardError => e
+    puts e.message
+    false
   end
 
   def show_wagons
-    if @wagons.length != 0
-      @wagons.each_with_index { |wagon, index| puts "#{index + 1}: #{wagon}" }
-    else
-      puts 'Нет ни одного вагона'
-      menu
-    end
+    raise 'Нет ни одного вагона' if @wagons.length == 0
+    @wagons.each_with_index { |wagon, index| puts "#{index + 1}: #{wagon}" }
+    true
+  rescue StandardError => e
+    puts e.message
+    false
   end
 end
 

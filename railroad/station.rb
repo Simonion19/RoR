@@ -12,6 +12,7 @@ class Station
 
   def initialize(name)
     @name = name
+    validate!
     @trains = []
     @@stations << self
     register_instance
@@ -27,5 +28,20 @@ class Station
 
   def trains_by_type(type)
     @trains.select { |train| train.type == type }
+  end
+
+  def valid?
+    validate!
+    true
+  rescue StandardError => e
+    puts e.message
+    false
+  end
+
+  protected
+
+  def validate!
+    raise "Name can't be nil" if @name.nil?
+    raise "Name should be at least 5 symbols" if @name.length < 5
   end
 end
