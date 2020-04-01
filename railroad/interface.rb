@@ -51,8 +51,7 @@ class RailRoad
         @stations << create_station
         add_object_menu
       when 2
-        new_train = create_train
-        @trains << new_train
+        @trains << create_train
         add_object_menu
       when 3
         @wagons << create_wagon
