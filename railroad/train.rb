@@ -1,9 +1,11 @@
 require_relative './module_company.rb'
 require_relative './module_instance_counter.rb'
+require_relative './module_valid?.rb'
 
 class Train
   include Company
   include InstanceCounter
+  include Valid
 
   attr_reader :wagons, :number, :type, :speed, :route
 
@@ -71,8 +73,6 @@ class Train
       current_station.remove_train(self)
       @current_station += 1
       current_station.add_train(self)
-    else
-      raise 'Это конечная станция'
     end
   end
 
@@ -81,16 +81,7 @@ class Train
       current_station.remove_train(self)
       @current_station -= 1
       current_station.add_train(self)
-    else
-      raise 'Это первая станция маршрута'
     end
-  end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError => e
-    puts e.message
   end
 
   protected
