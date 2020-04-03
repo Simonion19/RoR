@@ -48,33 +48,15 @@ class RailRoad
     enter = gets.chomp.to_i
     case enter
       when 1
-        new_station = create_station
-
-        while !new_station
-          new_station = create_station
-        end
-
-        @stations << new_station
+        @stations << create_station
         add_object_menu
       when 2
-        new_train = create_train
-
-        while !new_train
-          new_train = create_train
-        end
-
-        @trains << new_train
+        @trains << create_train
         add_object_menu
       when 3
         @wagons << create_wagon
         add_object_menu
       when 4
-        new_route = create_route
-
-        while !new_route
-          new_route = create_route
-        end
-
         @routes << create_route
         add_object_menu
       when 0
@@ -91,7 +73,7 @@ class RailRoad
     Station.new(enter)
   rescue StandardError => e
     puts e.message
-    nil
+    retry
   end
 
   def create_train
@@ -108,7 +90,7 @@ class RailRoad
     new_train
   rescue StandardError => e
     puts e.message
-    nil
+    retry
   end
 
   def create_wagon
@@ -130,7 +112,7 @@ class RailRoad
 
   rescue StandardError => e
     puts e.message
-    nil
+    retry
   end
 
   def edit_object_menu

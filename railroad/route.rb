@@ -31,6 +31,8 @@ class Route
   private
 
   def validate!
-    raise 'First or last station is nil!' if !@stations.first || !@stations.last    
+    raise 'First or last station is nil!' if !@stations.first || !@stations.last 
+    raise "First and last stations must be different!" if @stations.first == @stations.last
+    raise "It's not a stations!" if @stations.first.class != Station || @stations.last.class != Station 
   end
 end

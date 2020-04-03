@@ -36,6 +36,5 @@ class Station
 
   def validate!
     raise "Name can't be nil" if @name.nil?
-    raise "Name should be at least 5 symbols" if @name.length < 5
   end
 end
