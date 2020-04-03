@@ -1,7 +1,9 @@
 require_relative './module_instance_counter.rb'
+require_relative './module_valid?.rb'
 
 class Station
   include InstanceCounter
+  include Valid
   attr_reader :name, :trains
 
   @@stations = []
@@ -12,6 +14,7 @@ class Station
 
   def initialize(name)
     @name = name
+    validate!
     @trains = []
     @@stations << self
     register_instance
@@ -27,5 +30,11 @@ class Station
 
   def trains_by_type(type)
     @trains.select { |train| train.type == type }
+  end
+
+  protected
+
+  def validate!
+    raise "Name can't be nil" if @name.nil?
   end
 end
