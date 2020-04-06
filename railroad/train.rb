@@ -84,6 +84,10 @@ class Train
     end
   end
 
+  def wagons_to_block
+    @wagons.each { |wagon, index| yield(wagon, index) }
+  end
+
   protected
 
   def validate!

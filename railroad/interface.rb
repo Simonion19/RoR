@@ -98,7 +98,17 @@ class RailRoad
     puts 'Введите 2 для выбора пассажирского вагона'
     enter = gets.chomp.to_i
 
-    enter == 1 ? (return CargoWagon.new) : (return PassengerWagon.new)
+    if enter == 1
+      puts 'Введите объём вагона'
+      volume = gets.chomp.to_i
+
+      return CargoWagon.new(volume)
+    else 
+      puts 'Введите кол-во мест'
+      seats = gets.chomp.to_i
+
+      return PassengerWagon.new(seats)
+    end
   end
 
   def create_route
@@ -123,6 +133,7 @@ class RailRoad
     puts 'Введите 5 для удаления вагона из поезда'
     puts 'Введите 6 для перемещения поезда вперед'
     puts 'Введите 7 для перемещения поезда назад'
+    puts 'Введите 8 чтобы занять место или объем в вагоне'
     puts 'Введите 0 для возвращения в меню'
     
     enter = gets.chomp.to_i
@@ -148,6 +159,9 @@ class RailRoad
         edit_object_menu
       when 7
         move_train_backward
+        edit_object_menu
+      when 8
+        seat_or_occupy
         edit_object_menu
       when 0
         menu
@@ -252,8 +266,43 @@ class RailRoad
     end
   end
 
+  def seat_or_occupy
+    show_wagons
+    puts 'Введите номер вагона'
+    enter = gets.chomp.to_i
+
+    if @wagons[enter - 1].type == 'cargo'
+      puts 'Введите сколько занять объема'
+      volume = gets.chomp.to_i
+      @wagons[enter - 1].occupy_volume(volume)
+    else
+      @wagons[enter - 1].seat
+    end
+  end
+
   def show_data
-    @stations.each_with_index { |station, index| puts "#{index + 1}: #{station.name},\n #{station.trains}"}
+    puts 'Введите 1 для показа станций'
+    puts 'Введите 2 для показа поездов на станции'
+    puts 'Введите 3 для показа вагонов у поезда'
+    puts 'Введите 0 для возвращения в меню'
+
+    enter = gets.chomp.to_i
+    case enter
+      when 1
+        show_stations
+        show_data
+      when 2
+        trains_on_station
+        show_data
+      when 3
+        wagons_on_train
+        show_data
+      when 0
+        menu
+      else
+        puts 'Такой команды не существует!'
+        show_data
+    end
   end
 
   def show_stations
@@ -293,6 +342,34 @@ class RailRoad
     else
       @wagons.each_with_index { |wagon, index| puts "#{index + 1}: #{wagon}" }
       true
+    end
+  end
+
+  def trains_on_station
+    if show_stations
+      puts 'Введите номер станции'
+      number = gets.chomp.to_i
+
+      @stations[number - 1].trains { |train| puts "Number: #{train.number}, type: #{train.type}, wagons: #{train.wagons.length}" }
+    else
+      show_data
+    end
+  end
+
+  def wagons_on_train
+    if show_trains
+      puts 'Введите номер поезда'
+      number = gets.chomp.to_i
+
+      @trains[number - 1].wagons_to_block do |wagon, index|
+        if wagon.type == 'cargo' 
+          puts "Number: #{index}, type: #{wagon.type}, free volume: #{wagon.free_volume}, occupied volume: #{wagon.occupied_volume}"
+        else
+          puts "Number: #{index}, type: #{wagon.type}, free seats: #{wagon.free_seats}, occupied seats: #{wagon.occupied_seats}"
+        end
+      end
+    else
+      show_data
     end
   end
 end
