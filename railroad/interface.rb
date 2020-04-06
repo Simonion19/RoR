@@ -350,7 +350,7 @@ class RailRoad
       puts 'Введите номер станции'
       number = gets.chomp.to_i
 
-      @stations[number - 1].trains { |train| puts "Number: #{train.number}, type: #{train.type}, wagons: #{train.wagons.length}" }
+      @stations[number - 1].trains_to_block { |train| puts "Number: #{train.number}, type: #{train.type}, wagons: #{train.wagons.length}" }
     else
       show_data
     end

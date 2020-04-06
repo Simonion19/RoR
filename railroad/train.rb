@@ -85,7 +85,7 @@ class Train
   end
 
   def wagons_to_block
-    @wagons.each { |wagon, index| yield(wagon, index) }
+    @wagons.each_with_index { |wagon, index| yield(wagon, index) }
   end
 
   protected
