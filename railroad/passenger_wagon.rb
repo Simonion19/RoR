@@ -6,7 +6,10 @@ class PassengerWagon < Wagon
   NUMBER_OF_SEATS = 50
 
   def initialize(seats = NUMBER_OF_SEATS)
-    @type = 'passenger'
-    super(seats)
+    super(seats, 'passenger')
+  end
+
+  def occupy
+    super(1)
   end
 end
