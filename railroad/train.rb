@@ -1,15 +1,16 @@
 require_relative './module_company.rb'
 require_relative './module_instance_counter.rb'
-require_relative './module_valid?.rb'
+require_relative './module_validation.rb'
 
 class Train
   include Company
   include InstanceCounter
-  include Valid
-
-  attr_reader :wagons, :number, :type, :speed, :route
+  extend Validation
 
   NUMBER_FORMAT = /[А-яA-z0-9]{3}-?[А-яA-z0-9]{2}/
+
+  attr_reader :wagons, :number, :type, :speed, :route
+  validate :number, :format, NUMBER_FORMAT
 
   @@trains = {}
 
@@ -89,13 +90,6 @@ class Train
   end
 
   protected
-
-  def validate!
-    raise "Number can't be nil" if @number.nil?
-    raise "Number should be at least 5 symbols" if @number.length < 5
-    raise "Number length can't be more than 6 symbols" if @number.length > 6
-    raise "Number has invalid format" if @number !~ NUMBER_FORMAT
-  end
 
   def first_station
     @route.stations.first
