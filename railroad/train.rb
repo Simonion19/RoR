@@ -5,11 +5,12 @@ require_relative './module_validation.rb'
 class Train
   include Company
   include InstanceCounter
-  extend Validation
+  include Validation
 
   NUMBER_FORMAT = /[А-яA-z0-9]{3}-?[А-яA-z0-9]{2}/
 
   attr_reader :wagons, :number, :type, :speed, :route
+  validate :number, :length , {min: 5, max: 6}
   validate :number, :format, NUMBER_FORMAT
 
   @@trains = {}

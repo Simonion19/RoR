@@ -3,7 +3,7 @@ require_relative './module_validation.rb'
 
 class Station
   include InstanceCounter
-  extend Validation
+  include Validation
 
   attr_reader :name, :trains
   validate :name, :presence

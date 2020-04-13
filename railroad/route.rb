@@ -3,22 +3,20 @@ require_relative './module_validation.rb'
 
 class Route
   include InstanceCounter
-  extend Validation
+  include Validation
 
   attr_reader :stations
-  validate :'first_station', :presence
-  validate :'last_station', :presence
-  validate :'first_station', :type, 'Station'
-  validate :'last_station', :type, 'Station'
+  validate :first_station, :presence
+  validate :last_station, :presence
+  validate :first_station, :type, 'Station'
+  validate :last_station, :type, 'Station'
+  validate :first_station, :equality, :last_station
 
   def initialize(start_station, end_station)
     @stations = [start_station, end_station]
     @first_station = start_station
     @last_station = end_station
     validate!
-    if @first_station == @last_station
-      raise "Одинаковые первая и последняя станция"
-    end
     register_instance
   end
 
