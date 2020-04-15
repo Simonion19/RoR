@@ -1,10 +1,12 @@
 require_relative './module_instance_counter.rb'
-require_relative './module_valid?.rb'
+require_relative './module_validation.rb'
 
 class Station
   include InstanceCounter
-  include Valid
+  include Validation
+
   attr_reader :name, :trains
+  validate :name, :presence
 
   @@stations = []
 
@@ -34,11 +36,5 @@ class Station
 
   def trains_to_block
     @trains.each { |train| yield(train)}
-  end
-
-  protected
-
-  def validate!
-    raise "Name can't be nil" if @name.nil?
   end
 end

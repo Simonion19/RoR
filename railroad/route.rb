@@ -1,14 +1,21 @@
 require_relative './module_instance_counter.rb'
-require_relative './module_valid?.rb'
+require_relative './module_validation.rb'
 
 class Route
   include InstanceCounter
-  include Valid
+  include Validation
 
   attr_reader :stations
+  validate :first_station, :presence
+  validate :last_station, :presence
+  validate :first_station, :type, 'Station'
+  validate :last_station, :type, 'Station'
+  validate :first_station, :equality, :last_station
 
   def initialize(start_station, end_station)
     @stations = [start_station, end_station]
+    @first_station = start_station
+    @last_station = end_station
     validate!
     register_instance
   end
@@ -26,13 +33,5 @@ class Route
   def show_route_stations
     puts "Route:"
     @stations.each { |station| print "#{station.name} " }
-  end
-
-  private
-
-  def validate!
-    raise 'First or last station is nil!' if !@stations.first || !@stations.last 
-    raise "First and last stations must be different!" if @stations.first == @stations.last
-    raise "It's not a stations!" if @stations.first.class != Station || @stations.last.class != Station 
   end
 end
